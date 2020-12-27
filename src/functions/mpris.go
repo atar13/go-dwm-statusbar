@@ -99,6 +99,7 @@ func GetMpris() string {
 		return "▶ Playing: " + output
 
 	} else if status == "Paused" {
+		//have an option to format pause state
 		return "▌▌ Paused"
 	} else {
 		return ""

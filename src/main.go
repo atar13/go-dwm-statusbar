@@ -17,7 +17,7 @@ import (
 func main()  {
 	
 	//retrieve from config.json
-	modules := []string{"battery", "cpu", "mpris", "time", "date"}
+	modules := []string{"ram", "battery", "cpu", "mpris", "time", "date"}
 
 	desktopSession := os.Getenv("XDG_SESSION_DESKTOP")
 
@@ -28,11 +28,8 @@ func main()  {
 
 
 	for {
-
 		output := ""
-
 		for idx, module := range modules {
-
 			moduleData := ""
 			switch module {
 				case "time":
@@ -46,12 +43,17 @@ func main()  {
 					moduleData += F.GetCPUUsage()
 				case "battery":
 					moduleData += F.GetBatteryPercentage()
+				case "ram":
+					moduleData += F.GetRAMData("format placeholder", 'G')
+					// moduleData += F.GetRAMUsage("format placeholder", false)
+
 			}
 			if moduleData == "" {
 				continue
 			}
 
 			if idx != len(modules) - 1 {
+				//customize delimiter
 				moduleData += " | "
 			}
 

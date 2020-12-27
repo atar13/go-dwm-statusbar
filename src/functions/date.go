@@ -1,6 +1,9 @@
 package functions
 
-import "time"
+import (
+	"time"
+	"fmt"
+)
 
 //GetDate provides the current date in the format that the user specifies 
 func GetDate(format string) string {
@@ -9,6 +12,6 @@ func GetDate(format string) string {
 
 	formattedDate := fullTime.Format("Jan 02")
 
-	return formattedDate
+	return fmt.Sprintf("%v", formattedDate)
 
 }
