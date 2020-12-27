@@ -17,7 +17,7 @@ import (
 func main()  {
 	
 	//retrieve from config.json
-	modules := []string{"cpu", "mpris", "time", "date"}
+	modules := []string{"battery", "cpu", "mpris", "time", "date"}
 
 	desktopSession := os.Getenv("XDG_SESSION_DESKTOP")
 
@@ -44,6 +44,8 @@ func main()  {
 				case "cpu":
 					moduleData += F.GetCPUTemp('F')
 					moduleData += F.GetCPUUsage()
+				case "battery":
+					moduleData += F.GetBatteryPercentage()
 			}
 			if moduleData == "" {
 				continue
