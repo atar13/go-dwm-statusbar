@@ -12,7 +12,13 @@ import (
 //add config.json parser
 //setData function 
 
+
+
+
 func main()  {
+	
+	//retreive from config.json
+	modules := []string{"time", "date"}
 
 	desktopSession := os.Getenv("XDG_SESSION_DESKTOP")
 
@@ -24,12 +30,26 @@ func main()  {
 
 	for {
 
+		output := ""
+
+		for idx, module := range modules {
+			switch module {
+				case "time":
+					output += F.GetTime()
+				case "date":
+					output += F.GetDate("format placeholder")
+			}
+
+			if(idx != len(modules) - 1){
+				output += " | "
+			}
+		}
+
 
 		xsetroot := "xsetroot"
 		arg1 := "-name"
-		data := F.GetTime()
 
-		cmd := exec.Command(xsetroot, arg1, data)
+		cmd := exec.Command(xsetroot, arg1, output)
 
 		_, err := cmd.Output()
 
@@ -37,9 +57,7 @@ func main()  {
 			fmt.Println(err)
 			return 
 		}
-		// fmt.Println("snarf")
 		time.Sleep(1000 * time.Millisecond)
-
 	}
 
 }
