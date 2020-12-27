@@ -17,7 +17,7 @@ import (
 func main()  {
 	
 	//retrieve from config.json
-	modules := []string{"ram", "battery", "cpu", "mpris", "time", "date"}
+	modules := []string{"brightness", "ram", "battery", "cpu", "mpris", "time", "date"}
 
 	desktopSession := os.Getenv("XDG_SESSION_DESKTOP")
 
@@ -46,6 +46,8 @@ func main()  {
 				case "ram":
 					moduleData += F.GetRAMData("format placeholder", 'G')
 					// moduleData += F.GetRAMUsage("format placeholder", false)
+				case "brightness":
+					moduleData += F.GetBrightness()
 
 			}
 			if moduleData == "" {
