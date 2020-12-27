@@ -17,7 +17,7 @@ import (
 func main()  {
 	
 	//retrieve from config.json
-	modules := []string{"mpris", "time", "date"}
+	modules := []string{"cpu", "mpris", "time", "date"}
 
 	desktopSession := os.Getenv("XDG_SESSION_DESKTOP")
 
@@ -41,6 +41,9 @@ func main()  {
 					moduleData += F.GetDate("format placeholder")
 				case "mpris":
 					moduleData += F.GetMpris()
+				case "cpu":
+					moduleData += F.GetCPUTemp('F')
+					moduleData += F.GetCPUUsage()
 			}
 			if moduleData == "" {
 				continue
