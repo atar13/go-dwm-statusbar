@@ -1,13 +1,12 @@
 package main
 
-import "os/exec"
-import "os"
-import "fmt"
-import "strings"
-
-import "time"
 import (
-    F "./functions"
+	"os/exec"
+	"os"
+	"fmt"
+	"strings"
+	"time"
+	F "./functions"
 )
 //add config.json parser
 //setData function 
