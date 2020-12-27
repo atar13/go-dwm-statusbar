@@ -17,8 +17,8 @@ import (
 
 func main()  {
 	
-	//retreive from config.json
-	modules := []string{"time", "date"}
+	//retrieve from config.json
+	modules := []string{"mpris", "time", "date"}
 
 	desktopSession := os.Getenv("XDG_SESSION_DESKTOP")
 
@@ -33,16 +33,25 @@ func main()  {
 		output := ""
 
 		for idx, module := range modules {
+
+			moduleData := ""
 			switch module {
 				case "time":
-					output += F.GetTime()
+					moduleData += F.GetTime()
 				case "date":
-					output += F.GetDate("format placeholder")
+					moduleData += F.GetDate("format placeholder")
+				case "mpris":
+					moduleData += F.GetMpris()
+			}
+			if moduleData == "" {
+				continue
 			}
 
-			if(idx != len(modules) - 1){
-				output += " | "
+			if idx != len(modules) - 1 {
+				moduleData += " | "
 			}
+
+			output += moduleData
 		}
 
 
