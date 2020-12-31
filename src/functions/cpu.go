@@ -4,9 +4,40 @@ import(
 	"os/exec"
 	"fmt"
 	"strconv"
-	// "strings"
-	// "text/scanner"
 )
+
+
+//GetCPUTemp returns the current CPU temperature as specified in the units passed as a parameter
+func GetCPUTemp(unit rune) string {
+
+	cat := "cat"
+	arg1 := "/sys/class/thermal/thermal_zone1/temp"
+
+	cmd := exec.Command(cat, arg1)
+
+	temp, err := cmd.Output()
+
+	if err != nil {
+		return ""
+	}
+	tempString := string(temp[:len(temp)-1])
+	tempInt, err := strconv.ParseFloat(tempString, 10)
+	if err != nil {
+		return ""
+	}
+
+	tempInt /= 1000
+
+	if unit == 'C' {
+		return fmt.Sprintf("%.1f°C", tempInt)
+	} else if unit == 'F'{
+		tempInt = (tempInt * 1.8) + 32
+		return fmt.Sprintf("%.1f°F",tempInt)
+	} else {
+		return ""
+	}
+}
+
 
 /*
 user    nice   system  idle      iowait irq   softirq  steal  guest  guest_nice
@@ -128,33 +159,4 @@ func GetCPUUsage() string {
 	return ""
 }
 
-//
-func GetCPUTemp(unit rune) string {
 
-	cat := "cat"
-	arg1 := "/sys/class/thermal/thermal_zone1/temp"
-
-	cmd := exec.Command(cat, arg1)
-
-	temp, err := cmd.Output()
-
-	if err != nil {
-		return ""
-	}
-	tempString := string(temp[:len(temp)-1])
-	tempInt, err := strconv.ParseFloat(tempString, 10)
-	if err != nil {
-		return ""
-	}
-
-	tempInt /= 1000
-
-	if unit == 'C' {
-		return fmt.Sprintf("%.1f°C", tempInt)
-	} else if unit == 'F'{
-		tempInt = (tempInt * 1.8) + 32
-		return fmt.Sprintf("%.1f°F",tempInt)
-	} else {
-		return ""
-	}
-}

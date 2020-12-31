@@ -1,0 +1,80 @@
+# Sample config file for go-dwm-statusbar
+
+# Modules
+# Available Modules:
+# time, date, mpris, cpu, battery, ram, brightness, pulse
+#
+# Explanation of each module is below or at https://github.com/atar13/go-dwm-statusBar/README.md#Modules
+#
+Modules: [time, date]
+
+ModuleSeperator: " | "
+
+# Time:
+# Current time based on the format provided
+  # TimeFormat:
+    # Example Formats:
+    # "HH:MM:SS", "HH:MM"
+    # QUOTES ARE NEEDED IF SPACES EXIST IN THE FORMAT
+    # Create a custom time format by placing the HH,MM,SS 
+    # (hours, minutes, seconds) placeholders with other text 
+    # Default is "HH:MM:SS" only when TimeFormat is left blank
+TimeFormat: "HH:MM:SS"
+  # TwentyFourHour:
+    # true or false
+    # Enables 24-hour time
+TwentyFourHour: true
+
+# Date:
+# Current date based on the format provided 
+  # DateFormat:
+  # Example Formats:
+  # "mmm DD", "MM/DD/YYYY", "DD/MM/YYYY", "ddd mmm DD YYYY"
+  # QUOTES ARE NEEDED IF SPACES EXIST IN THE FORMAT
+  # MM - Numerical Month (January would show up as 1)
+  # DD - Numerical Day (1st day of the month would show up as 1)
+  # YYYY - Numerical Year
+  # mmm - Textual Month (January would show up as Jan)
+  # ddd - Day of the week
+  # Default is "mmm DD YYYY" when left blank
+DateFormat: "MM/DD/YYYY"
+
+# Mpris:
+# Current placback information in media players that support mpris.
+#
+#Options:
+  #
+Mpris:
+
+# Cpu:
+# Current CPU temperature  
+# Options:
+  #
+cpu:
+
+# Battery:
+# MUST HAVE THE "acpi" PACKAGE INSTALLED 
+# Current battery percentage and charging status
+# Options:
+  #
+battery:
+
+# RAM:
+# Current RAM usage as memory (in MB or GB) or percentage used
+# Options:
+  #
+ram:
+
+# Brightness:
+# MUST HAVE THE "xorg-xbacklight" PACKAGE INSTALLED 
+# Displays current date based on the format provided 
+# Options:
+  #
+brightness:
+
+# Pulse:
+# MUST HAVE THE "pulseaudio" PACKAGE INSTALLED 
+# Displays volume level or mute status 
+# Options:
+  #
+pulse:

@@ -3,21 +3,37 @@ package main
 import (
 	"os/exec"
 	"os"
+    "io/ioutil"
 	"fmt"
 	"strings"
 	"time"
 	F "./functions"
+	"gopkg.in/yaml.v2"
 )
 //add config.json parser
 //setData function 
 
+type Time struct{
+	Format string
+	TwentyFourHour bool
+}
 
+
+
+type configInterface struct{
+	Modules			[]string	`yaml:"Modules"`
+	ModuleSeperator	string		`yaml:"ModuleSeperator"`
+	TimeFormat 		string 		`yaml:"TimeFormat"`
+	TwentyFourHour 	bool 		`yaml:"TwentyFourHour"`
+	DateFormat		string		`yaml:"DateFormat"`
+	
+}
 
 
 func main()  {
-	
+
 	//retrieve from config.json
-	modules := []string{"brightness", "ram", "battery", "cpu", "mpris", "time", "date"}
+	// modules := []string{"pulse","brightness", "ram", "battery", "cpu", "mpris", "time", "date"}
 
 	desktopSession := os.Getenv("XDG_SESSION_DESKTOP")
 
@@ -26,6 +42,14 @@ func main()  {
 		os.Exit(1)
 	}
 
+    var config configInterface
+	parsedConfig := config.retrieveConfig()
+
+	fmt.Println(parsedConfig)
+
+	modules := parsedConfig.Modules
+
+
 
 	for {
 		output := ""
@@ -33,9 +57,9 @@ func main()  {
 			moduleData := ""
 			switch module {
 				case "time":
-					moduleData += F.GetTime()
+					moduleData += F.GetTime(parsedConfig.TimeFormat, parsedConfig.TwentyFourHour)
 				case "date":
-					moduleData += F.GetDate("format placeholder")
+					moduleData += F.GetDate(parsedConfig.DateFormat)
 				case "mpris":
 					moduleData += F.GetMpris()
 				case "cpu":
@@ -44,11 +68,12 @@ func main()  {
 				case "battery":
 					moduleData += F.GetBatteryPercentage()
 				case "ram":
-					moduleData += F.GetRAMData("format placeholder", 'G')
-					// moduleData += F.GetRAMUsage("format placeholder", false)
+					// moduleData += F.GetRAMData("format placeholder", 'G')
+					moduleData += F.GetRAMUsage("format placeholder", false)
 				case "brightness":
 					moduleData += F.GetBrightness()
-
+				case "pulse":
+					moduleData += F.GetPulseVolume()
 			}
 			if moduleData == "" {
 				continue
@@ -56,7 +81,8 @@ func main()  {
 
 			if idx != len(modules) - 1 {
 				//customize delimiter
-				moduleData += " | "
+				// moduleData += " | "
+				moduleData += parsedConfig.ModuleSeperator
 			}
 
 			output += moduleData
@@ -74,7 +100,22 @@ func main()  {
 			fmt.Println(err)
 			return 
 		}
-		time.Sleep(1000 * time.Millisecond)
+		time.Sleep(100 * time.Millisecond)
 	}
 
+}
+
+
+
+func (config *configInterface) retrieveConfig() configInterface {
+
+    data, err := ioutil.ReadFile("config-sample.yaml")
+    if err != nil {
+		fmt.Println("Error with reading config file")
+    }
+
+
+	yaml.Unmarshal(data, config)
+
+	return *config
 }
