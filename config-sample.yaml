@@ -6,7 +6,7 @@
 #
 # Explanation of each module is below or at https://github.com/atar13/go-dwm-statusBar/README.md#Modules
 #
-Modules: [time, date]
+Modules: [mpris,  battery, pulse, time, date]
 
 ModuleSeperator: " | "
 
@@ -41,10 +41,24 @@ DateFormat: "MM/DD/YYYY"
 
 # Mpris:
 # Current placback information in media players that support mpris.
-#
+# VLC, cmus have been tested and work perfectly 
+# Spotify displays everything except track position
 #Options:
-  #
-Mpris:
+  # PlayingFormat:
+  # Example Formats:
+  # "▶ @t @alb", "@t @art", "@t @alar", "@t @p/@l", "@t @p:@l"
+  # @t - Track Title
+  # @alb - Album
+  # @art - Track Artist
+  # @alar - Album Artist
+  # @p - Current Track Position in Time
+  # @l - Track Length in Time
+PlayingFormat: "@t @alar @p/@l"
+  # PausedFormat:
+  # Same format used as PlayingFormat
+  # Example Formats:
+  # "▌▌ Paused: @t @alb", "▌▌ Paused: @t @art", "▌▌ Paused: @t @alar", "▌▌ Paused: @t @p/@l", "▌▌ Paused: @t @p:@l"
+PausedFormat: "▌▌ Paused"
 
 # Cpu:
 # Current CPU temperature  

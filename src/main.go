@@ -26,7 +26,9 @@ type configInterface struct{
 	TimeFormat 		string 		`yaml:"TimeFormat"`
 	TwentyFourHour 	bool 		`yaml:"TwentyFourHour"`
 	DateFormat		string		`yaml:"DateFormat"`
-	
+	PlayingFormat	string		`yaml:"PlayingFormat"`
+	PausedFormat	string		`yaml:"PausedFormat"`
+
 }
 
 
@@ -61,7 +63,7 @@ func main()  {
 				case "date":
 					moduleData += F.GetDate(parsedConfig.DateFormat)
 				case "mpris":
-					moduleData += F.GetMpris()
+					moduleData += F.GetMpris(parsedConfig.PlayingFormat, parsedConfig.PausedFormat)
 				case "cpu":
 					moduleData += F.GetCPUTemp('F')
 					moduleData += F.GetCPUUsage()

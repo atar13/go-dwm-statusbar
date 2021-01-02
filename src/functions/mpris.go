@@ -12,9 +12,8 @@ GetMpris returns the ...
 Compatible with cmus, vlc, and partially spotify
 POSITION DOESNT WORK ON SPOTIFY, IT ALWAYS DISPLAYS ZERO
 TODO: custom formatting for play state and pause state with a parser that converts it to a string ready to pass into fmt.sprintf
-
 */
-func GetMpris() string {
+func GetMpris(playingFormat string, pausedFormat string) string {
 	con, conErr := dbus.SessionBus()
 
 	if conErr != nil {
@@ -94,9 +93,54 @@ func GetMpris() string {
 
 		fmt.Println(album, artist, formattedPosition, formattedTrackLength)
 
+		output := ""
 
-		output := title + " by " + albumArtist
-		return "▶ Playing: " + output
+		if playingFormat == "" {
+			output = title + " by " + albumArtist
+			return "▶ Playing: " + output
+		}
+
+
+		for i := 0; i < len(playingFormat); i++ {
+			char := string(playingFormat[i])
+			if char == "@"{
+				nextChar := string(playingFormat[i + 1])
+				fmt.Println(nextChar)
+				i++
+				switch nextChar {
+					case "t":
+						output += title
+					case "p":
+						output += formattedPosition
+					case "l":
+						output += formattedTrackLength
+					case "a":
+						// skipNextChar = true
+						if string(playingFormat[i + 1]) == "r" {
+							if string(playingFormat[i +2]) == "t" {
+								output += artist
+								i +=2
+							}
+						} else if string(playingFormat[i+1]) == "l" {
+							if string(playingFormat[i +2]) == "b" {
+								output += album
+								i +=2
+							} else if string(playingFormat[i + 2]) == "a" {
+								if string(playingFormat[i + 3]) == "r" {
+									output += albumArtist
+									i += 3
+								}
+							}
+						} else {
+
+						}
+				}
+			} else {			
+				output += string(char)
+			}
+		}
+
+		return output
 
 	} else if status == "Paused" {
 		//have an option to format pause state
