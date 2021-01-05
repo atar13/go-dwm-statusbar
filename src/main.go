@@ -2,10 +2,10 @@ package main
 
 import (
 	"os/exec"
-	"os"
+//	"os"
     "io/ioutil"
 	"fmt"
-	"strings"
+//	"strings"
 	"time"
 	F "./functions"
 	"gopkg.in/yaml.v2"
@@ -37,13 +37,14 @@ func main()  {
 	//retrieve from config.json
 	// modules := []string{"pulse","brightness", "ram", "battery", "cpu", "mpris", "time", "date"}
 
-	desktopSession := os.Getenv("XDG_SESSION_DESKTOP")
+//	desktopSession := os.Getenv("XDG_SESSION_DESKTOP")
 
+/*
 	if(strings.Compare(desktopSession, "dwm") != 0){
 		fmt.Println("Window Manager is not DWM")
 		os.Exit(1)
 	}
-
+*/
     var config configInterface
 	parsedConfig := config.retrieveConfig()
 
