@@ -1,23 +1,14 @@
 package main
 
 import (
-	"os/exec"
-//	"os"
-    "io/ioutil"
 	"fmt"
-//	"strings"
+	"io/ioutil"
+	"os"
+	"os/exec"
 	"time"
 	F "./functions"
 	"gopkg.in/yaml.v2"
 )
-//add config.json parser
-//setData function 
-
-type Time struct{
-	Format string
-	TwentyFourHour bool
-}
-
 
 
 type configInterface struct{
@@ -28,23 +19,19 @@ type configInterface struct{
 	DateFormat		string		`yaml:"DateFormat"`
 	PlayingFormat	string		`yaml:"PlayingFormat"`
 	PausedFormat	string		`yaml:"PausedFormat"`
-
+	CPUTempUnits 	string 		`yaml:"CPUTempUnits"`
+	BatteryFormat 	string 		`yaml:"BatteryFormat"`
+	RAMDisplay 		string		`yaml:"RAMDisplay"`
+	RAMRawUnit		string		`yaml:"RAMRawUnit"`
+	RAMRawFormat	string 		`yaml:"RAMRawFormat"`
+	PulseMutedFormat string 	`yaml:"PulseMutedFormat"`
+	PulseVolumeFormat string 	`yaml:"PulseVolumeFormat"`
 }
 
 
 func main()  {
 
-	//retrieve from config.json
-	// modules := []string{"pulse","brightness", "ram", "battery", "cpu", "mpris", "time", "date"}
 
-//	desktopSession := os.Getenv("XDG_SESSION_DESKTOP")
-
-/*
-	if(strings.Compare(desktopSession, "dwm") != 0){
-		fmt.Println("Window Manager is not DWM")
-		os.Exit(1)
-	}
-*/
     var config configInterface
 	parsedConfig := config.retrieveConfig()
 
@@ -66,17 +53,20 @@ func main()  {
 				case "mpris":
 					moduleData += F.GetMpris(parsedConfig.PlayingFormat, parsedConfig.PausedFormat)
 				case "cpu":
-					moduleData += F.GetCPUTemp('F')
-					moduleData += F.GetCPUUsage()
+					moduleData += F.GetCPUTemp(parsedConfig.CPUTempUnits)
+					// moduleData += F.GetCPUUsage()
 				case "battery":
-					moduleData += F.GetBatteryPercentage()
+					moduleData += F.GetBatteryPercentage(parsedConfig.BatteryFormat)
 				case "ram":
-					// moduleData += F.GetRAMData("format placeholder", 'G')
-					moduleData += F.GetRAMUsage("format placeholder", false)
+					if parsedConfig.RAMDisplay == "Percentage" {
+						moduleData += F.GetRAMUsage("format placeholder", false)
+					} else if parsedConfig.RAMDisplay == "Raw" {
+						moduleData += F.GetRAMData(parsedConfig.RAMRawFormat, parsedConfig.RAMRawUnit)
+					}
 				case "brightness":
 					moduleData += F.GetBrightness()
 				case "pulse":
-					moduleData += F.GetPulseVolume()
+					moduleData += F.GetPulseVolume(parsedConfig.PulseMutedFormat, parsedConfig.PulseVolumeFormat)
 			}
 			if moduleData == "" {
 				continue
@@ -112,11 +102,12 @@ func main()  {
 
 func (config *configInterface) retrieveConfig() configInterface {
 
-    data, err := ioutil.ReadFile("config-sample.yaml")
-    if err != nil {
+	data, err := ioutil.ReadFile(os.Getenv("HOME") + "/.config/go-dwm-statusbar/config.yaml")
+//    data, err := ioutil.ReadFile("config-sample.yaml")
+
+	if err != nil {
 		fmt.Println("Error with reading config file")
     }
-
 
 	yaml.Unmarshal(data, config)
 

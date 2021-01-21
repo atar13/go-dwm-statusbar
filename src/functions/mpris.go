@@ -14,6 +14,7 @@ POSITION DOESNT WORK ON SPOTIFY, IT ALWAYS DISPLAYS ZERO
 TODO: custom formatting for play state and pause state with a parser that converts it to a string ready to pass into fmt.sprintf
 */
 func GetMpris(playingFormat string, pausedFormat string) string {
+
 	con, conErr := dbus.SessionBus()
 
 	if conErr != nil {
@@ -105,7 +106,7 @@ func GetMpris(playingFormat string, pausedFormat string) string {
 			char := string(playingFormat[i])
 			if char == "@"{
 				nextChar := string(playingFormat[i + 1])
-				fmt.Println(nextChar)
+				// fmt.Println(nextChar)
 				i++
 				switch nextChar {
 					case "t":

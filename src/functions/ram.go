@@ -62,19 +62,58 @@ func updateRAMStatus() {
 }
 
 //GetRAMData provides the ...
-func GetRAMData(format string, unit rune) string {
+func GetRAMData(format string, unit string) string {
 	updateRAMStatus()
-	if unit == 'G' {
+
+	var usedString string
+	var freeString string
+	var availableString string
+	var totalString string
+
+	if unit == "G" {
 		availableGig := float64(available)/1000
 		usedGig := float64(used)/1000
 		freeGig := float64(free)/1000
 		totalGig := float64(total)/1000
 
-		return fmt.Sprintf("%0.02f %0.02f %0.02f %0.02f",availableGig, usedGig, freeGig, totalGig)
+		availableString = fmt.Sprintf("%0.02f", availableGig)
+		usedString = fmt.Sprintf("%0.02f", usedGig)
+		freeString = fmt.Sprintf("%0.02f", freeGig)
+		totalString = fmt.Sprintf("%0.02f", totalGig)
+
+	} else {
+		availableString = fmt.Sprintf("%v", int64(available))
+		usedString = fmt.Sprintf("%v", int64(used))
+		freeString = fmt.Sprintf("%v", int64(free))
+		totalString = fmt.Sprintf("%v", int64(total))
 	}
 
-	placeholder := fmt.Sprint(free, available, used, total)
-	return placeholder
+	output := ""
+
+	for i := 0; i < len(format); i++ {
+		char := string(format[i])
+		
+		if char == "@" {
+			i++;
+			nextChar := string(format[i])
+
+			switch nextChar {
+			case "u":
+				output += usedString;
+			case "a":
+				output += availableString;
+			case "f":
+				output += freeString;
+			case "t":
+				output += totalString;
+			}
+		} else {
+			output += char
+		}
+	}
+
+
+	return output
 }
 
 //take care of divide by zero error

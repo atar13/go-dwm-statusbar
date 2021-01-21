@@ -2,16 +2,13 @@ package functions
 
 import (
 	"os/exec"
-	"fmt"
 	"strings"
 	"text/scanner"
 	// "strconv"
 )
 
-
-
 //GetBatteryPercentage requires the acpi package https://sourceforge.net/projects/acpiclient/
-func GetBatteryPercentage() string {
+func GetBatteryPercentage(batteryFormat string) string {
 
 	var percentageString string
 
@@ -39,7 +36,27 @@ func GetBatteryPercentage() string {
 	// 	return ""
 	// }
 
-	return fmt.Sprintf("⚡ %v%%", percentageString)
+
+	formattedOutput := ""
+	
+	for i := 0; i < len(batteryFormat); i++ {
+		char := string(batteryFormat[i])
+
+		if char == "@" {
+			nextChar := string(batteryFormat[i + 1])
+			i++
+			if nextChar == "b" {
+				formattedOutput += percentageString
+			}
+		} else if char == "%"{
+			formattedOutput += "%"
+		} else {
+			formattedOutput += string(char)
+		}
+	}
+
+	// return fmt.Sprintf("⚡ %v%%", percentageString)
+	return formattedOutput
 }
 
 

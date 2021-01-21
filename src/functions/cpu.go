@@ -8,10 +8,10 @@ import(
 
 
 //GetCPUTemp returns the current CPU temperature as specified in the units passed as a parameter
-func GetCPUTemp(unit rune) string {
+func GetCPUTemp(unit string) string {
 
 	cat := "cat"
-	arg1 := "/sys/class/thermal/thermal_zone1/temp"
+	arg1 := "/sys/class/thermal/thermal_zone0/temp"
 
 	cmd := exec.Command(cat, arg1)
 
@@ -28,9 +28,10 @@ func GetCPUTemp(unit rune) string {
 
 	tempInt /= 1000
 
-	if unit == 'C' {
+	
+	if unit == "C" {
 		return fmt.Sprintf("%.1f°C", tempInt)
-	} else if unit == 'F'{
+	} else if unit == "F"{
 		tempInt = (tempInt * 1.8) + 32
 		return fmt.Sprintf("%.1f°F",tempInt)
 	} else {

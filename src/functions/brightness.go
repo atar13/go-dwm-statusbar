@@ -24,9 +24,9 @@ func GetBrightness() string {
 	var formattedString string
 
 	if brightnessFloat < 50.0 {
-		formattedString = fmt.Sprintf("🔅 %0.00f", brightnessFloat)
+		formattedString = fmt.Sprintf("🔅 %v", int64(brightnessFloat))
 	} else {
-		formattedString = fmt.Sprintf("🔆 %0.00f", brightnessFloat)
+		formattedString = fmt.Sprintf("🔆 %v", int64(brightnessFloat))
 	}
 	
 

@@ -1,4 +1,4 @@
-# Sample config file for go-dwm-statusbar
+# Config file for go-dwm-statusbar
 
 # Modules
 # Available Modules:
@@ -6,7 +6,7 @@
 #
 # Explanation of each module is below or at https://github.com/atar13/go-dwm-statusBar/README.md#Modules
 #
-Modules: [mpris,  battery, pulse, time, date]
+Modules: [cpu, ram, mpris, pulse, time, date]
 
 ModuleSeperator: " | "
 
@@ -63,32 +63,57 @@ PausedFormat: "▌▌ Paused"
 # Cpu:
 # Current CPU temperature  
 # Options:
-  #
-cpu:
+  # Units:
+  # "F" or "C"
+CPUTempUnits: "F"
 
 # Battery:
 # MUST HAVE THE "acpi" PACKAGE INSTALLED 
 # Current battery percentage and charging status
 # Options:
-  #
-battery:
+  # BatteryFormat
+  # @b - Battery percentage value
+  # Examples Formats:
+  # "⚡ @b %"
+BatteryFormat: "⚡ @b %"
 
 # RAM:
 # Current RAM usage as memory (in MB or GB) or percentage used
 # Options:
-  #
-ram:
+  # RAMDisplay:
+  # "Percentage" or "Raw"
+RAMDisplay: "Raw"
+  # RAMRawUnit: Units for when RAMDisplay is set to Raw
+  # Options:
+  # "G" (Gigabytes) or defaults to "M" (Megabytes)
+RAMRawUnit: "G"
+  # RAMRawFormat: Format for when RAMDisplay is set to Raw
+  #Options:
+  # @a - Available RAM
+  # @u - Used RAM
+  # @f - Free RAM
+  # @t - Total RAM
+  # Example Formats:
+  # "@u GB", "@u / @t"
+RAMRawFormat: "@u GB"
 
 # Brightness:
 # MUST HAVE THE "xorg-xbacklight" PACKAGE INSTALLED 
-# Displays current date based on the format provided 
+# Displays current display brightness (only works on laptops)
 # Options:
-  #
-brightness:
+  # No Brightness Options
 
 # Pulse:
 # MUST HAVE THE "pulseaudio" PACKAGE INSTALLED 
 # Displays volume level or mute status 
-# Options:
-  #
-pulse:
+# PulseMutedFormat: Format for when pulseaudio is muted
+# Example Formats:
+  # "🔇 Muted", "Muted", "🔇"
+PulseMutedFormat: "🔇 Muted"
+
+# PulseVolumeFormat: Format for pulseaudio volume
+  # Options:
+  # @v - Volume 
+  # Examples Formats:
+  # "@v%", "@v", "🔊 @v%"
+PulseVolumeFormat: "🔊 @v%"
