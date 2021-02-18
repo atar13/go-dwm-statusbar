@@ -35,27 +35,12 @@ func GetBatteryPercentage(batteryFormat string) string {
 	// if err != nil {
 	// 	return ""
 	// }
-
-
-	formattedOutput := ""
 	
-	for i := 0; i < len(batteryFormat); i++ {
-		char := string(batteryFormat[i])
 
-		if char == "@" {
-			nextChar := string(batteryFormat[i + 1])
-			i++
-			if nextChar == "b" {
-				formattedOutput += percentageString
-			}
-		} else if char == "%"{
-			formattedOutput += "%"
-		} else {
-			formattedOutput += string(char)
-		}
-	}
+	formattedOutput := batteryFormat
+	
+	formattedOutput = strings.ReplaceAll(formattedOutput, "@b", percentageString)
 
-	// return fmt.Sprintf("⚡ %v%%", percentageString)
 	return formattedOutput
 }
 
