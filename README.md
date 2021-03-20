@@ -16,17 +16,19 @@ Lightweight status bar for the dwm window manager.
     - Requires pulseaudio package
 
 ### Download
+```
+git clone https://github.com/atar13/go-dwm-statusbar.git
+```
 
 ### Install 
 
-*Coming soon*
+```
+cd go-dwm-statusbar
+sudo make install
+```
 
 ### Configuration
 
 Edit or create a config file at ```$HOME/.config/go-dwm-statusbar/config.yaml```
 
-Full description of configuration options can be found in the [```config-sample.yaml``` file](./config-sample.yaml)
-
-#### Options
-
-*Coming Soon*
+Full description of configuration options can be found in the [```config-sample.yaml```](./config-sample.yaml) file
