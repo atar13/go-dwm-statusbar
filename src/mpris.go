@@ -1,10 +1,10 @@
-package functions
+package main
 
 import (
 	"fmt"
 	"strconv"
 	"github.com/Pauloo27/go-mpris"
-	"github.com/godbus/dbus"
+	"github.com/godbus/dbus/v5"
 )
 
 /*

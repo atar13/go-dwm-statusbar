@@ -11,7 +11,7 @@ import (
 	"strconv"
 	"time"
 
-	F "./functions"
+	// F "functions"
 	"gopkg.in/yaml.v2"
 )
 
@@ -62,26 +62,26 @@ func main()  {
 			moduleData := ""
 			switch module {
 				case "time":
-					moduleData += F.GetTime(parsedConfig.TimeFormat, parsedConfig.TwentyFourHour)
+					moduleData += GetTime(parsedConfig.TimeFormat, parsedConfig.TwentyFourHour)
 				case "date":
-					moduleData += F.GetDate(parsedConfig.DateFormat)
+					moduleData += GetDate(parsedConfig.DateFormat)
 				case "mpris":
-					moduleData += F.GetMpris(parsedConfig.PlayingFormat, parsedConfig.PausedFormat)
+					moduleData += GetMpris(parsedConfig.PlayingFormat, parsedConfig.PausedFormat)
 				case "cpu":
-					moduleData += F.GetCPUTemp(parsedConfig.CPUTempUnits)
+					moduleData += GetCPUTemp(parsedConfig.CPUTempUnits)
 					// moduleData += F.GetCPUUsage()
 				case "battery":
-					moduleData += F.GetBatteryPercentage(parsedConfig.BatteryFormat)
+					moduleData += GetBatteryPercentage(parsedConfig.BatteryFormat)
 				case "ram":
 					if parsedConfig.RAMDisplay == "Percentage" {
-						moduleData += F.GetRAMUsage("format placeholder", false)
+						moduleData += GetRAMUsage("format placeholder", false)
 					} else if parsedConfig.RAMDisplay == "Raw" {
-						moduleData += F.GetRAMData(parsedConfig.RAMRawFormat, parsedConfig.RAMRawUnit)
+						moduleData += GetRAMData(parsedConfig.RAMRawFormat, parsedConfig.RAMRawUnit)
 					}
 				case "brightness":
-					moduleData += F.GetBrightness()
+					moduleData += GetBrightness()
 				case "pulse":
-					moduleData += F.GetPulseVolume(parsedConfig.PulseMutedFormat, parsedConfig.PulseVolumeFormat)
+					moduleData += GetPulseVolume(parsedConfig.PulseMutedFormat, parsedConfig.PulseVolumeFormat)
 			}
 			if moduleData == "" {
 				continue
