@@ -8,7 +8,20 @@
 #
 Modules: [cpu, ram, mpris, pulse, time, date]
 
+# Text that seperates each module
 ModuleSeperator: " | "
+
+# RefreshConfig:
+# Reads the config file occasionaly after the statusbar starts up and updates the statusbar accordingly 
+  # true or false
+RefreshConfig: true
+
+# RefreshConfigRate
+# Reads the config file every couple seconds depending on the value of RefreshConfigRate 
+  # Any number greater or equal to 1
+  # Default is 100
+  # Write with quotes wrapped around
+RefreshConfigRate: "7100"
 
 # Time:
 # Current time based on the format provided

@@ -2,10 +2,15 @@ package main
 
 import (
 	"fmt"
+
+	// "io"
 	"io/ioutil"
 	"os"
 	"os/exec"
+
+	"strconv"
 	"time"
+
 	F "./functions"
 	"gopkg.in/yaml.v2"
 )
@@ -14,6 +19,8 @@ import (
 type configInterface struct{
 	Modules			[]string	`yaml:"Modules"`
 	ModuleSeperator	string		`yaml:"ModuleSeperator"`
+	RefreshConfig	bool 		`yaml:"RefreshConfig"`
+	RefreshConfigRate string	`yaml:"RefreshConfigRate"`
 	TimeFormat 		string 		`yaml:"TimeFormat"`
 	TwentyFourHour 	bool 		`yaml:"TwentyFourHour"`
 	DateFormat		string		`yaml:"DateFormat"`
@@ -29,19 +36,27 @@ type configInterface struct{
 }
 
 
-func main()  {
 
+func main()  {
 
     var config configInterface
 	parsedConfig := config.retrieveConfig()
 
+	fmt.Println("Config file successfully loaded")
 	fmt.Println(parsedConfig)
 
-	modules := parsedConfig.Modules
-
-
+	loopCounter := 0
 
 	for {
+		loopCounter++
+		modules := parsedConfig.Modules
+
+		configRefreshRate, err := strconv.Atoi(parsedConfig.RefreshConfigRate)
+		if err != nil {
+			configRefreshRate = 100
+		}
+
+
 		output := ""
 		for idx, module := range modules {
 			moduleData := ""
@@ -73,8 +88,6 @@ func main()  {
 			}
 
 			if idx != len(modules) - 1 {
-				//customize delimiter
-				// moduleData += " | "
 				moduleData += parsedConfig.ModuleSeperator
 			}
 
@@ -87,11 +100,17 @@ func main()  {
 
 		cmd := exec.Command(xsetroot, arg1, output)
 
-		_, err := cmd.Output()
+		_, err = cmd.Output()
 
 		if err != nil {
 			fmt.Println(err)
 			return 
+		}
+		if parsedConfig.RefreshConfig && loopCounter % configRefreshRate == 0 {
+			parsedConfigChan := make(chan configInterface)	
+			go refreshConfig(parsedConfigChan, parsedConfig) 
+			parsedConfig = <- parsedConfigChan
+			fmt.Println(parsedConfig)
 		}
 		time.Sleep(100 * time.Millisecond)
 	}
@@ -101,15 +120,20 @@ func main()  {
 
 
 func (config *configInterface) retrieveConfig() configInterface {
+	data, err := ioutil.ReadFile(fmt.Sprintf("%s/.config/go-dwm-statusbar/config.yaml", os.Getenv("HOME")))
 
-	data, err := ioutil.ReadFile(os.Getenv("HOME") + "/.config/go-dwm-statusbar/config.yaml")
-//    data, err := ioutil.ReadFile("config-sample.yaml")
-
+	fmt.Println("Updating config")
 	if err != nil {
 		fmt.Println("Error with reading config file")
     }
 
 	yaml.Unmarshal(data, config)
 
+	data = nil
+	
 	return *config
+}
+
+func refreshConfig(config chan configInterface, configStruct configInterface) {
+		config <- configStruct.retrieveConfig()
 }

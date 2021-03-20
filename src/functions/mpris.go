@@ -28,7 +28,7 @@ func GetMpris(playingFormat string, pausedFormat string) string {
 		return ""
 	}
 	if len(players) == 0 {
-		fmt.Println("No player found")
+		// fmt.Println("No player found")
 		return ""
 	}
 
@@ -92,7 +92,7 @@ func GetMpris(playingFormat string, pausedFormat string) string {
 		positionSec := positionInt%60
 		formattedPosition = fmt.Sprintf("%v:%02d",positionMin, positionSec)
 
-		fmt.Println(album, artist, formattedPosition, formattedTrackLength)
+		// fmt.Println(album, artist, formattedPosition, formattedTrackLength)
 
 		output := ""
 
@@ -145,7 +145,7 @@ func GetMpris(playingFormat string, pausedFormat string) string {
 
 	} else if status == "Paused" {
 		//have an option to format pause state
-		return "▌▌ Paused"
+		return pausedFormat
 	} else {
 		return ""
 	}
