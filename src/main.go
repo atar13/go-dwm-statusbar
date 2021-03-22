@@ -28,6 +28,7 @@ type configInterface struct{
 	PausedFormat	string		`yaml:"PausedFormat"`
 	MprisMaxLength 	string		`yaml:"MprisMaxLength"`
 	ScrollMpris		bool		`yaml:"ScrollMpris"`
+	MprisScrollSpeed string		`yaml:"MprisScrollSpeed"`
 	CPUTempUnits 	string 		`yaml:"CPUTempUnits"`
 	BatteryFormat 	string 		`yaml:"BatteryFormat"`
 	RAMDisplay 		string		`yaml:"RAMDisplay"`
@@ -64,11 +65,16 @@ func main()  {
 			moduleData := ""
 			switch module {
 				case "time":
-					moduleData += GetTime(parsedConfig.TimeFormat, parsedConfig.TwentyFourHour)
+					moduleData += GetTime(parsedConfig.TimeFormat, 
+											parsedConfig.TwentyFourHour)
 				case "date":
 					moduleData += GetDate(parsedConfig.DateFormat)
 				case "mpris":
-					moduleData += GetMpris(parsedConfig.PlayingFormat, parsedConfig.PausedFormat, parsedConfig.MprisMaxLength, parsedConfig.ScrollMpris)
+					moduleData += GetMpris(parsedConfig.PlayingFormat, 
+											parsedConfig.PausedFormat, 
+											parsedConfig.MprisMaxLength, 
+											parsedConfig.ScrollMpris,
+											parsedConfig.MprisScrollSpeed)
 				case "cpu":
 					moduleData += GetCPUTemp(parsedConfig.CPUTempUnits)
 					// moduleData += F.GetCPUUsage()
@@ -78,12 +84,14 @@ func main()  {
 					if parsedConfig.RAMDisplay == "Percentage" {
 						moduleData += GetRAMUsage("format placeholder", false)
 					} else if parsedConfig.RAMDisplay == "Raw" {
-						moduleData += GetRAMData(parsedConfig.RAMRawFormat, parsedConfig.RAMRawUnit)
+						moduleData += GetRAMData(parsedConfig.RAMRawFormat, 
+													parsedConfig.RAMRawUnit)
 					}
 				case "brightness":
 					moduleData += GetBrightness()
 				case "pulse":
-					moduleData += GetPulseVolume(parsedConfig.PulseMutedFormat, parsedConfig.PulseVolumeFormat)
+					moduleData += GetPulseVolume(parsedConfig.PulseMutedFormat, 
+													parsedConfig.PulseVolumeFormat)
 			}
 			if moduleData == "" {
 				continue

@@ -77,6 +77,8 @@ MprisMaxLength: 20
 
 ScrollMpris: true
 
+MprisScrollSpeed: 0.75
+
 # Cpu:
 # Current CPU temperature  
 # Options:
