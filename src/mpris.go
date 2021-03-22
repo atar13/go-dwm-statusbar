@@ -13,7 +13,7 @@ Compatible with cmus, vlc, and partially spotify
 POSITION DOESNT WORK ON SPOTIFY, IT ALWAYS DISPLAYS ZERO
 TODO: custom formatting for play state and pause state with a parser that converts it to a string ready to pass into fmt.sprintf
 */
-func GetMpris(playingFormat string, pausedFormat string) string {
+func GetMpris(playingFormat string, pausedFormat string, maxLength string, scroll bool) string {
 
 	con, conErr := dbus.SessionBus()
 
@@ -41,6 +41,32 @@ func GetMpris(playingFormat string, pausedFormat string) string {
 	}
 
 	if status == "Playing" {
+		return getPlayingInfo(player, playingFormat)
+	} else if status == "Paused" {
+		//have an option to format pause state
+		for _, player := range players {
+			player := mpris.New(con, player)
+
+			status, err := player.GetPlaybackStatus()
+			if err != nil {
+				continue;
+			}
+			if status == "Playing" {
+				return getPlayingInfo(player, playingFormat)	
+			}
+		}
+		return pausedFormat
+	} else {
+		return ""
+	}
+	
+	
+
+}
+
+
+
+func getPlayingInfo(player *mpris.Player, playingFormat string) string {
 		metadata, err := player.GetMetadata()
 		if err != nil {
 			return ""
@@ -142,14 +168,4 @@ func GetMpris(playingFormat string, pausedFormat string) string {
 		}
 
 		return output
-
-	} else if status == "Paused" {
-		//have an option to format pause state
-		return pausedFormat
-	} else {
-		return ""
-	}
-	
-	
-
 }

@@ -73,6 +73,10 @@ PlayingFormat: "@t @alar @p/@l"
   # "▌▌ Paused: @t @alb", "▌▌ Paused: @t @art", "▌▌ Paused: @t @alar", "▌▌ Paused: @t @p/@l", "▌▌ Paused: @t @p:@l"
 PausedFormat: "▌▌ Paused"
 
+MprisMaxLength: 20
+
+ScrollMpris: true
+
 # Cpu:
 # Current CPU temperature  
 # Options:

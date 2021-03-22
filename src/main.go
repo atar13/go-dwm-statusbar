@@ -26,6 +26,8 @@ type configInterface struct{
 	DateFormat		string		`yaml:"DateFormat"`
 	PlayingFormat	string		`yaml:"PlayingFormat"`
 	PausedFormat	string		`yaml:"PausedFormat"`
+	MprisMaxLength 	string		`yaml:"MprisMaxLength"`
+	ScrollMpris		bool		`yaml:"ScrollMpris"`
 	CPUTempUnits 	string 		`yaml:"CPUTempUnits"`
 	BatteryFormat 	string 		`yaml:"BatteryFormat"`
 	RAMDisplay 		string		`yaml:"RAMDisplay"`
@@ -66,7 +68,7 @@ func main()  {
 				case "date":
 					moduleData += GetDate(parsedConfig.DateFormat)
 				case "mpris":
-					moduleData += GetMpris(parsedConfig.PlayingFormat, parsedConfig.PausedFormat)
+					moduleData += GetMpris(parsedConfig.PlayingFormat, parsedConfig.PausedFormat, parsedConfig.MprisMaxLength, parsedConfig.ScrollMpris)
 				case "cpu":
 					moduleData += GetCPUTemp(parsedConfig.CPUTempUnits)
 					// moduleData += F.GetCPUUsage()
