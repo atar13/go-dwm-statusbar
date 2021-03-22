@@ -3,12 +3,15 @@ package main
 import (
 	"fmt"
 	"strconv"
+
 	"github.com/Pauloo27/go-mpris"
 	"github.com/godbus/dbus/v5"
 )
 
+var tick int = 0
+
 /*
-GetMpris returns the ... 
+GetMpris returns the ...
 Compatible with cmus, vlc, and partially spotify
 POSITION DOESNT WORK ON SPOTIFY, IT ALWAYS DISPLAYS ZERO
 TODO: custom formatting for play state and pause state with a parser that converts it to a string ready to pass into fmt.sprintf
@@ -39,9 +42,14 @@ func GetMpris(playingFormat string, pausedFormat string, maxLength string, scrol
 	if err != nil {
 		return ""
 	}
+	
+	maxLengthInt, err := strconv.Atoi(maxLength)
+	if err != nil {
+		maxLengthInt = 1 
+	}
 
 	if status == "Playing" {
-		return getPlayingInfo(player, playingFormat)
+		return getPlayingInfo(player, playingFormat, maxLengthInt, scroll)
 	} else if status == "Paused" {
 		//have an option to format pause state
 		for _, player := range players {
@@ -52,21 +60,18 @@ func GetMpris(playingFormat string, pausedFormat string, maxLength string, scrol
 				continue;
 			}
 			if status == "Playing" {
-				return getPlayingInfo(player, playingFormat)	
+				return getPlayingInfo(player, playingFormat, maxLengthInt, scroll)	
 			}
 		}
 		return pausedFormat
 	} else {
 		return ""
 	}
-	
-	
-
 }
 
 
 
-func getPlayingInfo(player *mpris.Player, playingFormat string) string {
+func getPlayingInfo(player *mpris.Player, playingFormat string, maxLength int, scroll bool) string {
 		metadata, err := player.GetMetadata()
 		if err != nil {
 			return ""
@@ -151,7 +156,7 @@ func getPlayingInfo(player *mpris.Player, playingFormat string) string {
 						} else if string(playingFormat[i+1]) == "l" {
 							if string(playingFormat[i +2]) == "b" {
 								output += album
-								i +=2
+								i += 2
 							} else if string(playingFormat[i + 2]) == "a" {
 								if string(playingFormat[i + 3]) == "r" {
 									output += albumArtist
@@ -167,5 +172,21 @@ func getPlayingInfo(player *mpris.Player, playingFormat string) string {
 			}
 		}
 
+		if len(output) > maxLength {
+			if scroll {
+				tick++
+				startPos := tick % len(output)
+				endPos := (tick + maxLength) % len(output)
+
+				if(endPos > startPos) {
+					output = fmt.Sprintf("%s ", output[startPos:endPos])
+				} else {
+					output = fmt.Sprintf("%s %s", output[startPos:], output[:endPos])
+				}
+
+			} else {
+				output = output[:maxLength]
+			}
+		}
 		return output
 }

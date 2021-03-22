@@ -21,7 +21,7 @@ RefreshConfig: true
   # Any number greater or equal to 1
   # Default is 100
   # Write with quotes wrapped around
-RefreshConfigRate: "7100"
+RefreshConfigRate: "100"
 
 # Time:
 # Current time based on the format provided

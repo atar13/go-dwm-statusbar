@@ -24,6 +24,7 @@ git clone https://github.com/atar13/go-dwm-statusbar.git
 
 ```
 cd go-dwm-statusbar
+make build
 sudo make install
 ```
 
