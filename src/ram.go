@@ -6,6 +6,8 @@ import (
 	"text/scanner"
 	"strconv"
 	"fmt"
+	"math"
+	"github.com/shirou/gopsutil/mem"
 )
 
 var available int64
@@ -117,14 +119,24 @@ func GetRAMData(format string, unit string) string {
 }
 
 //take care of divide by zero error
-func GetRAMUsage(format string, useFree bool) string {
-	updateRAMStatus()
-	var percentage float64
-	if useFree {
-		percentage = float64(free)/float64(available)
-	} else {
-		percentage = float64(used)/float64(available)
+func GetRAMUsage() string {
+	// updateRAMStatus()
+	// var percentage float64
+	// if useFree {
+	// 	percentage = float64(free)/float64(available)
+	// } else {
+	// 	percentage = float64(used)/float64(available)
+	// }
+	// percentage *= 100
+	// return fmt.Sprintf("ram: %0.01f%%", percentage)
+	memory,err := mem.VirtualMemory()
+	if err!=nil{
+		fmt.Println(err)
 	}
-	percentage *= 100
-	return fmt.Sprintf("ram: %0.01f%%", percentage)
+	return fmt.Sprintf("%o", int(math.Ceil(memory.UsedPercent)))
+}
+
+func GetRAM(ramChan chan string, config *configInterface) {
+	defaultFormat := "%s%%"
+	ramChan <- fmt.Sprintf(defaultFormat, GetRAMUsage())
 }

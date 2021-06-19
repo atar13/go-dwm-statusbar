@@ -1,10 +1,9 @@
-package main 
+package main
 
 import (
-	"time"
 	"strings"
-	)
-// import "fmt"
+	"time"
+)
 
 const defaultFormat = "03:04:05"
 const default24Format = "15:04:05"
@@ -19,11 +18,12 @@ func GetTime(timeChan chan string, config *configInterface) {
 		if format == "" {
 			if twentyFourHour {
 				timeChan <- fullTime.Format(default24Format)
-			} else {
-				timeChan <- fullTime.Format(defaultFormat)
+				time.Sleep(time.Second)
+				continue
 			}
+			timeChan <- fullTime.Format(defaultFormat)
 			time.Sleep(time.Second)
-			continue	
+			continue
 		}
 
 		format = strings.ReplaceAll(format, "MM", "04")
@@ -37,10 +37,7 @@ func GetTime(timeChan chan string, config *configInterface) {
 			format = strings.ReplaceAll(format, "HH", "03")
 			formattedTime = fullTime.Format(format)
 		}
-		// return formattedTime
 		timeChan <- formattedTime
 		time.Sleep(time.Second)
 	}
 }
-
-

@@ -1,14 +1,18 @@
 package main
 
-import( 
-	"os/exec"
+import (
 	"fmt"
+	"math"
+	"os/exec"
 	"strconv"
+	"time"
+
+	"github.com/shirou/gopsutil/cpu"
 )
 
-
 //GetCPUTemp returns the current CPU temperature as specified in the units passed as a parameter
-func GetCPUTemp(unit string) string {
+func GetCPUTemp(config *configInterface) string {
+	unit := config.CPUTempUnits
 
 	cat := "cat"
 	arg1 := "/sys/class/thermal/thermal_zone0/temp"
@@ -28,17 +32,15 @@ func GetCPUTemp(unit string) string {
 
 	tempInt /= 1000
 
-	
 	if unit == "C" {
-		return fmt.Sprintf("%.1f°C", tempInt)
-	} else if unit == "F"{
+		return fmt.Sprintf("%.1f°C", math.Ceil(tempInt))
+	} else if unit == "F" {
 		tempInt = (tempInt * 1.8) + 32
-		return fmt.Sprintf("%.1f°F",tempInt)
+		return fmt.Sprintf("%.1f°F", math.Ceil(tempInt))
 	} else {
 		return ""
 	}
 }
-
 
 /*
 user    nice   system  idle      iowait irq   softirq  steal  guest  guest_nice
@@ -66,7 +68,7 @@ func GetCPUUsage() string {
 	// var previdle int
 	// var previoWait int
 	// var PrevIdle int
-	
+
 	// var idle int
 	// var iowait int
 	// var Idle int
@@ -74,7 +76,7 @@ func GetCPUUsage() string {
 	// var prevuser int
 	// var prevnice int64
 	// var prevsystem int64
-	// var previrq int 
+	// var previrq int
 	// var prevsoftirq int
 	// var prevsteal int
 	// var PrevNonIdle int
@@ -95,13 +97,10 @@ func GetCPUUsage() string {
 
 	// var idled int
 
-	// var percentage int 
+	// var percentage int
 
-
-
-	
 	// for j := 0; j < 2; j++ {
-			
+
 	// 	cat := "cat"
 	// 	arg1 := "/proc/stat"
 
@@ -130,7 +129,7 @@ func GetCPUUsage() string {
 	// 						if err != nil {
 	// 							return ""
 	// 						}
-	// 					case 1: 
+	// 					case 1:
 	// 						prevsystem, err = strconv.ParseInt(nextWord, 10, 32)
 	// 						if err != nil {
 	// 							return ""
@@ -138,7 +137,7 @@ func GetCPUUsage() string {
 
 	// 					}
 	// 				case 1:
-						
+
 	// 				}
 	// 				if s.TokenText()=="cpu0" {
 	// 					break
@@ -148,16 +147,22 @@ func GetCPUUsage() string {
 	// 		}
 	// 	}
 
-
 	// 	if j == 0 {
 	// 		//pause for half a second
 	// 	}
 
 	// }
 
-	// // for tok := 
-	
-	return ""
+	// // for tok :=
+
+	percent, err := cpu.Percent(time.Second, false)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return fmt.Sprintf("%o", int(math.Ceil(percent[0])))
 }
 
-
+func GetCPU(cpuChan chan string, config *configInterface) {
+	defaultFormat := "Temp:%s Usage:%s%%"
+	cpuChan <- fmt.Sprintf(defaultFormat, GetCPUTemp(config), GetCPUUsage())
+}

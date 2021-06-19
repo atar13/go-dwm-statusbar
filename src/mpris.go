@@ -16,23 +16,32 @@ Compatible with cmus, vlc, and partially spotify
 POSITION DOESNT WORK ON SPOTIFY, IT ALWAYS DISPLAYS ZERO
 TODO: custom formatting for play state and pause state with a parser that converts it to a string ready to pass into fmt.sprintf
 */
-func GetMpris(playingFormat string, pausedFormat string, maxLength string, scroll bool, scrollSpeed string) string {
+func GetMpris(mprisChan chan string, config *configInterface) {
+// func GetMpris(playingFormat string, pausedFormat string, maxLength string, scroll bool, scrollSpeed string) string {
+	playingFormat := config.PlayingFormat
+	pausedFormat := config.PausedFormat
+	maxLength := config.MprisMaxLength
+	scroll := config.ScrollMpris
+	scrollSpeed := config.MprisScrollSpeed
 
 	con, conErr := dbus.SessionBus()
 
 	if conErr != nil {
 		fmt.Println("Error with connecting to DBUS")
-		return ""
+		mprisChan <- ""
+		return
 	}
 	players, playerErr := mpris.List(con)
 
 	if playerErr != nil {
 		fmt.Println("Error with detecting player")
-		return ""
+		mprisChan <- ""
+		return
 	}
 	if len(players) == 0 {
 		// fmt.Println("No player found")
-		return ""
+		mprisChan <- ""
+		return
 	}
 
 	name := players[0]
@@ -40,7 +49,8 @@ func GetMpris(playingFormat string, pausedFormat string, maxLength string, scrol
 
 	status, err := player.GetPlaybackStatus()
 	if err != nil {
-		return ""
+		mprisChan <- ""
+		return
 	}
 	
 	maxLengthInt, err := strconv.Atoi(maxLength)
@@ -54,7 +64,8 @@ func GetMpris(playingFormat string, pausedFormat string, maxLength string, scrol
 	}
 
 	if status == "Playing" {
-		return getPlayingInfo(player, playingFormat, maxLengthInt, scroll, float32(scrollSpeedFloat))
+		mprisChan <- getPlayingInfo(player, playingFormat, maxLengthInt, scroll, float32(scrollSpeedFloat))
+		return
 	} else if status == "Paused" {
 		//have an option to format pause state
 		for _, player := range players {
@@ -65,12 +76,15 @@ func GetMpris(playingFormat string, pausedFormat string, maxLength string, scrol
 				continue;
 			}
 			if status == "Playing" {
-				return getPlayingInfo(player, playingFormat, maxLengthInt, scroll, float32(scrollSpeedFloat))	
+				mprisChan <- getPlayingInfo(player, playingFormat, maxLengthInt, scroll, float32(scrollSpeedFloat))	
+				return
 			}
 		}
-		return pausedFormat
+		mprisChan <- pausedFormat
+		return
 	} else {
-		return ""
+		mprisChan <- ""
+		return
 	}
 }
 
