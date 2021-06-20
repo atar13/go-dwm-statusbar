@@ -62,31 +62,10 @@ func main() {
 	fmt.Println(*parsedConfig)
 
 	loopCounter := 0
-	// maxLoopCounter := math.Max()
-
-	// mainRefreshInterval := 0.5
-
-	// timeRefreshInterval := 1 / mainRefreshInterval
-	// dateRefreshInterval := 10 / mainRefreshInterval
-	// mprisRefreshInterval := 1 / mainRefreshInterval
-	// cpuRefreshInterval := 1 / mainRefreshInterval
-	// ramRefreshInterval := 1 / mainRefreshInterval
-
-	// var displayTime string
-	// var displayDate string
-	// var displayMpris string
-	// var displayCpu string
-	// var displayRam string
 
 	// populates array of modules
 	var modules []*moduleData
 	populateModules(&modules, parsedConfig)
-
-	// getDate := math.Mod(float64(loopCounter), dateRefreshInterval) == 0
-	// getTime := math.Mod(float64(loopCounter), timeRefreshInterval) == 0
-	// getMpris := math.Mod(float64(loopCounter), mprisRefreshInterval) == 0
-	// getCpu := math.Mod(float64(loopCounter), cpuRefreshInterval) == 0
-	// getRam := math.Mod(float64(loopCounter), ramRefreshInterval) == 0
 
 	// fetch new module info and initialize all goroutines
 	for _, module := range modules {
@@ -105,7 +84,32 @@ func main() {
 			// fmt.Println(module.name)
 			select {
 			case moduleOutput := <-module.channel:
-				module.output = moduleOutput // update module's output data if new data is received from the channel
+				if module.name == "mpris" {
+					// maxLength := config.MprisMaxLength
+					// maxLengthInt, err := strconv.Atoi(maxLength)
+					// if err != nil {
+					// 	maxLengthInt = 1
+					// }
+					// if len(module.output) > maxLength {
+					// 	if parsedConfig.ScrollMpris {
+					// 		tick += 0.75
+					// 		intTick := int(tick)
+					// 		startPos := intTick % len(output)
+					// 		endPos := (intTick + maxLength) % len(output)
+
+					// 		if endPos > startPos {
+					// 			output = fmt.Sprintf("%s ", output[startPos:endPos])
+					// 		} else {
+					// 			output = fmt.Sprintf("%s %s", output[startPos:], output[:endPos])
+					// 		}
+
+					// 	} else {
+					// 		output = output[:maxLength]
+					// 	}
+					// }
+				} else {
+					module.output = moduleOutput // update module's output data if new data is received from the channel
+				}
 			default:
 				// continue // if not then look at the next module in the array and check it's channel
 				break
@@ -117,7 +121,6 @@ func main() {
 				}
 			}
 		}
-
 
 		xsetroot := "xsetroot"
 		arg1 := "-name"
@@ -143,7 +146,8 @@ func main() {
 			fmt.Println(*parsedConfig)
 		}
 		// time.Sleep(time.Duration(mainRefreshInterval) * time.Second)
-		time.Sleep(time.Second/2)
+		// maybe have half a second speed
+		time.Sleep(time.Second)
 	}
 
 }
@@ -155,7 +159,7 @@ func populateModules(modules *[]*moduleData, parsedConfig *configInterface) {
 		newModule.name = moduleName
 		mouduleChannel := make(chan string)
 		newModule.channel = mouduleChannel
-		// maybe check if it doesn't already exist in modules
+		// TODO: check if it doesn't already exist in modules
 		*modules = append(*modules, &newModule)
 	}
 }
@@ -166,41 +170,19 @@ func initializeRoutine(module string, moduleChan chan string, parsedConfig *conf
 	// <-moduleChan
 	switch module {
 	case "time":
-		// have this condition be based on time (another counter)
-		// if getTime {
-		fmt.Println("Getting time")
 		go GetTime(moduleChan, parsedConfig)
-		// only when the goroutine is called set a boolean to true meaning that the channel is ready ro recieve
-		// } else {
-		// if not set the boolean to false so that later it doesn't try to recieve data from the channel and instead uses previous information
-		// }
-
 	case "date":
-		// if getDate {
-		fmt.Println("Getting date")
 		go GetDate(moduleChan, parsedConfig)
-		// }
 	case "mpris":
-		// if getMpris {
-		// 	fmt.Println("Getting Mpris")
-		// 	go GetMpris(moduleChan, parsedConfig)
-		// }
+		go GetMpris(moduleChan, parsedConfig)
 	case "cpu":
-		// if getCpu {
-		// 	fmt.Println("Getting Cpu")
-		// 	go GetCPU(moduleChan, parsedConfig)
-		// }
+		go GetCPU(moduleChan, parsedConfig)
 	case "battery":
-
 	case "ram":
-		// if getRam {
-		// 	fmt.Println("Getting RAM")
-		// 	go GetRAM(moduleChan, parsedConfig)
-		// }
+		go GetRAM(moduleChan, parsedConfig)
 	case "brightness":
-
 	case "pulse":
-
+		go GetPulseVolume(moduleChan, parsedConfig)
 	}
 }
 

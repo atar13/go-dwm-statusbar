@@ -164,5 +164,8 @@ func GetCPUUsage() string {
 
 func GetCPU(cpuChan chan string, config *configInterface) {
 	defaultFormat := "Temp:%s Usage:%s%%"
-	cpuChan <- fmt.Sprintf(defaultFormat, GetCPUTemp(config), GetCPUUsage())
+	for {
+		cpuChan <- fmt.Sprintf(defaultFormat, GetCPUTemp(config), GetCPUUsage())
+		time.Sleep(5*time.Second)
+	}
 }

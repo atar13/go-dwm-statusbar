@@ -8,34 +8,37 @@ import (
 )
 
 // GetPulseVolume returns the value of the volume level from pulseaudio
-func GetPulseVolume(mutedFormat string, volumeFormat string) string {
+func GetPulseVolume(pulseChan chan string, config *configInterface) string {
 
-	client := pulseaudio.New()
-	volume := client.Volume
-	muted := client.Muted
+	mutedFormat := config.PulseMutedFormat
+	volumeFormat := config.PulseVolumeFormat
 
-	if muted {
-		return mutedFormat
+	for {
+		client := pulseaudio.New()
+		volume := client.Volume
+		muted := client.Muted
+
+		if muted {
+			return mutedFormat
+		}
+
+		// volumeOutput := ""
+
+		// for i := 0; i < len(volumeFormat); i++ {
+		// 	char := string(volumeFormat[i])
+
+		// 	if char == "@" {
+		// 		i++
+		// 		nextChar := string(volumeFormat[i])
+
+		// 		if nextChar == "v" {
+		// 			volumeOutput += fmt.Sprintf("%v", volume)
+		// 		}
+		// 	} else {
+		// 		volumeOutput += char
+		// 	}
+		// }
+
+		pulseChan <- strings.ReplaceAll(volumeFormat, "@v", fmt.Sprintf("%v", volume))
 	}
-
-	// volumeOutput := ""
-
-	// for i := 0; i < len(volumeFormat); i++ {
-	// 	char := string(volumeFormat[i])
-
-	// 	if char == "@" {
-	// 		i++
-	// 		nextChar := string(volumeFormat[i])
-
-	// 		if nextChar == "v" {
-	// 			volumeOutput += fmt.Sprintf("%v", volume)
-	// 		}	
-	// 	} else {
-	// 		volumeOutput += char
-	// 	}
-	// }
-	volumeOutput := strings.ReplaceAll(volumeFormat, "@v", fmt.Sprintf("%v", volume))
-	
-	return volumeOutput
-
 }

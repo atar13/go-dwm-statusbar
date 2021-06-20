@@ -1,12 +1,14 @@
 package main
 
 import (
-	"os/exec"
-	"strings"
-	"text/scanner"
-	"strconv"
 	"fmt"
 	"math"
+	"os/exec"
+	"strconv"
+	"strings"
+	"text/scanner"
+	"time"
+
 	"github.com/shirou/gopsutil/mem"
 )
 
@@ -138,5 +140,8 @@ func GetRAMUsage() string {
 
 func GetRAM(ramChan chan string, config *configInterface) {
 	defaultFormat := "%s%%"
-	ramChan <- fmt.Sprintf(defaultFormat, GetRAMUsage())
+	for {
+		ramChan <- fmt.Sprintf(defaultFormat, GetRAMUsage())
+		time.Sleep(5 * time.Second)
+	}
 }
