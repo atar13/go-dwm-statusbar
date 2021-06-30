@@ -2,31 +2,28 @@ package main
 
 import (
 	"fmt"
-	"os/exec"
-	"strconv"
+	"mrogalski.eu/go/xbacklight"
 	"time"
 )
 
-//Requires xbacklight (Package: xorg-xbacklight)
 func GetBrightness(brightnessChan chan string, config *configInterface) {
 	for {
-		cmd := exec.Command("xbacklight")
-		brightness, err := cmd.Output()
+		backlighter, err := xbacklight.NewBacklighterPrimaryScreen()
 		if err != nil {
+			fmt.Println("Error with connecting to X display:", err)
 			brightnessChan <- ""
 			time.Sleep(time.Second)
 			continue
 
 		}
-
-		brightnessString := string(brightness[:len(brightness)-1])
-
-		brightnessFloat, err := strconv.ParseFloat(brightnessString, 10)
+		brightnessFloat, err := backlighter.Get()
 		if err != nil {
+			fmt.Println("Couldn't query backlight:", err)
 			brightnessChan <- ""
 			time.Sleep(time.Second)
 			continue
 		}
+		brightnessFloat *= 100
 
 		var formattedString string
 
