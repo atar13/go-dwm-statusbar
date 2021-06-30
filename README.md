@@ -6,9 +6,7 @@ Lightweight status bar for the dwm window manager.
 - Date
 - Time
 - Battery
-    - Requires acpi package
 - Brightness
-    - Requires xbacklight (package: xorg-xbacklight)
 - CPU
 - RAM
 - MPRIS (Media playback status)

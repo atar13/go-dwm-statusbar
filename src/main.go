@@ -71,7 +71,7 @@ func main() {
 
 	// fetch new module info and initialize all goroutines
 	for _, module := range modules {
-		fmt.Println("making routine")
+		fmt.Printf("making %v routine\n", module.name)
 		initializeRoutine(module.name, module.channel, parsedConfig)
 	}
 
@@ -83,7 +83,6 @@ func main() {
 
 		// loops through modules and checks if their channels have any new data
 		for idx, module := range modules {
-			// fmt.Println(module.name)
 			select {
 			case moduleOutput := <-module.channel:
 				if module.name == "mpris" {
@@ -177,8 +176,6 @@ func populateModules(modules *[]*moduleData, parsedConfig *configInterface) {
 
 func initializeRoutine(module string, moduleChan chan string, parsedConfig *configInterface) {
 	// stops already running goroutine
-	// close(moduleChan)
-	// <-moduleChan
 	switch module {
 	case "time":
 		go GetTime(moduleChan, parsedConfig)

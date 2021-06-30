@@ -87,7 +87,6 @@ MprisScrollSpeed: 0.75
 CPUTempUnits: "F"
 
 # Battery:
-# MUST HAVE THE "acpi" PACKAGE INSTALLED 
 # Current battery percentage and charging status
 # Options:
   # BatteryFormat
@@ -117,7 +116,6 @@ RAMRawUnit: "G"
 RAMRawFormat: "@u GB"
 
 # Brightness:
-# MUST HAVE THE "xorg-xbacklight" PACKAGE INSTALLED 
 # Displays current display brightness (only works on laptops)
 # Options:
   # No Brightness Options
