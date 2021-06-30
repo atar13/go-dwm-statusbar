@@ -189,7 +189,7 @@ func initializeRoutine(module string, moduleChan chan string, parsedConfig *conf
 	case "cpu":
 		go GetCPU(moduleChan, parsedConfig)
 	case "battery":
-		// go GetBatt
+		go GetBatteryPercentage(moduleChan, parsedConfig)
 	case "ram":
 		go GetRAM(moduleChan, parsedConfig)
 	case "brightness":
