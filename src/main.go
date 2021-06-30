@@ -63,6 +63,8 @@ func main() {
 
 	loopCounter := 0
 
+	var tick float32 = 0
+
 	// populates array of modules
 	var modules []*moduleData
 	populateModules(&modules, parsedConfig)
@@ -85,34 +87,43 @@ func main() {
 			select {
 			case moduleOutput := <-module.channel:
 				if module.name == "mpris" {
-					// maxLength := config.MprisMaxLength
-					// maxLengthInt, err := strconv.Atoi(maxLength)
+					var mprisOutput string
+					maxLength := config.MprisMaxLength
+					maxLengthInt, err := strconv.Atoi(maxLength)
+					if err != nil {
+						maxLengthInt = 1
+					}
+					// scrollSpeed := config.MprisScrollSpeed
+					// scrollSpeedFloat, err := strconv.ParseFloat(scrollSpeed, 32)
 					// if err != nil {
-					// 	maxLengthInt = 1
+					// 	scrollSpeedFloat = 0.75
 					// }
-					// if len(module.output) > maxLength {
-					// 	if parsedConfig.ScrollMpris {
-					// 		tick += 0.75
-					// 		intTick := int(tick)
-					// 		startPos := intTick % len(output)
-					// 		endPos := (intTick + maxLength) % len(output)
+					if len(module.output) > maxLengthInt {
+						if parsedConfig.ScrollMpris {
+							tick += 0.75
+							intTick := int(tick)
+							startPos := intTick % len(moduleOutput)
+							endPos := (intTick + maxLengthInt) % len(moduleOutput)
+							// scrollSpeed := config.MprisScrollSpeed
+							// scrollSpeedFloat, err := strconv.ParseFloat(scrollSpeed, 32)
+							// if err != nil {
+							// 	sc
+							if endPos > startPos {
+								mprisOutput = fmt.Sprintf("%s ", moduleOutput[startPos:endPos])
+							} else {
+								mprisOutput = fmt.Sprintf("%s %s", moduleOutput[startPos:], moduleOutput[:endPos])
+							}
 
-					// 		if endPos > startPos {
-					// 			output = fmt.Sprintf("%s ", output[startPos:endPos])
-					// 		} else {
-					// 			output = fmt.Sprintf("%s %s", output[startPos:], output[:endPos])
-					// 		}
-
-					// 	} else {
-					// 		output = output[:maxLength]
-					// 	}
-					// }
+						} else {
+							mprisOutput = moduleOutput[:maxLengthInt]
+						}
+					}
+					module.output = mprisOutput 
 				} else {
 					module.output = moduleOutput // update module's output data if new data is received from the channel
 				}
 			default:
 				// continue // if not then look at the next module in the array and check it's channel
-				break
 			}
 			if module.output != "" {
 				output += module.output
@@ -178,9 +189,11 @@ func initializeRoutine(module string, moduleChan chan string, parsedConfig *conf
 	case "cpu":
 		go GetCPU(moduleChan, parsedConfig)
 	case "battery":
+		// go GetBatt
 	case "ram":
 		go GetRAM(moduleChan, parsedConfig)
 	case "brightness":
+		go GetBrightness(moduleChan, parsedConfig)
 	case "pulse":
 		go GetPulseVolume(moduleChan, parsedConfig)
 	}

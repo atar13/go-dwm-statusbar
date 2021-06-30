@@ -9,7 +9,6 @@ import (
 	"github.com/godbus/dbus/v5"
 )
 
-var tick float32 = 0
 
 /*
 GetMpris returns the ...
@@ -18,12 +17,8 @@ POSITION DOESNT WORK ON SPOTIFY, IT ALWAYS DISPLAYS ZERO
 TODO: custom formatting for play state and pause state with a parser that converts it to a string ready to pass into fmt.sprintf
 */
 func GetMpris(mprisChan chan string, config *configInterface) {
-	// func GetMpris(playingFormat string, pausedFormat string, maxLength string, scroll bool, scrollSpeed string) string {
 	playingFormat := config.PlayingFormat
 	pausedFormat := config.PausedFormat
-	maxLength := config.MprisMaxLength
-	scroll := config.ScrollMpris
-	scrollSpeed := config.MprisScrollSpeed
 
 	interval := time.Second
 
@@ -62,13 +57,10 @@ func GetMpris(mprisChan chan string, config *configInterface) {
 		}
 
 
-		scrollSpeedFloat, err := strconv.ParseFloat(scrollSpeed, 32)
-		if err != nil {
-			scrollSpeedFloat = 0.75
-		}
+
 
 		if status == "Playing" {
-			mprisChan <- getPlayingInfo(player, playingFormat, maxLengthInt, scroll, float32(scrollSpeedFloat))
+			mprisChan <- getPlayingInfo(player, playingFormat)
 			time.Sleep(interval)
 			continue
 		} else if status == "Paused" {
@@ -82,7 +74,7 @@ func GetMpris(mprisChan chan string, config *configInterface) {
 					continue
 				}
 				if status == "Playing" {
-					mprisChan <- getPlayingInfo(player, playingFormat, maxLengthInt, scroll, float32(scrollSpeedFloat))
+					mprisChan <- getPlayingInfo(player, playingFormat)
 					quit = true
 					break
 				}
@@ -103,7 +95,7 @@ func GetMpris(mprisChan chan string, config *configInterface) {
 	}
 }
 
-func getPlayingInfo(player *mpris.Player, playingFormat string, maxLength int, scroll bool, scrollSpeed float32) string {
+func getPlayingInfo(player *mpris.Player, playingFormat string) string {
 	metadata, err := player.GetMetadata()
 	if err != nil {
 		return ""
@@ -203,7 +195,6 @@ func getPlayingInfo(player *mpris.Player, playingFormat string, maxLength int, s
 			output += string(char)
 		}
 	}
-	fmt.Println(output)
 
 	return output
 }

@@ -9,6 +9,7 @@ require (
 	github.com/go-ole/go-ole v1.2.5 // indirect
 	github.com/godbus/dbus/v5 v5.0.3
 	github.com/joho/godotenv v1.3.0
+	github.com/qjcg/brightness v0.8.0 // indirect
 	github.com/shirou/gopsutil v3.21.5+incompatible // indirect
 	github.com/tklauser/go-sysconf v0.3.6 // indirect
 	github.com/vially/volumectl v0.1.0

@@ -19,8 +19,9 @@ clean:
 install: uninstall
 	@echo "Installing go-dwm-statusbar to system at /usr/bin"
 	cp ./go-dwm-statusbar /usr/bin
+	# TODO: check if config exists
 	@echo "Creating config directory at ~/.config/"
-	mkdir /home/$(USER)/.config/go-dwm-statusbar
+	mkdir -p /home/$(USER)/.config/go-dwm-statusbar
 	@echo "Copying config file to ~/.config/go-dwm-statusbar"
 	cp config-sample.yaml /home/$(USER)/.config/go-dwm-statusbar/config.yaml
 
