@@ -121,7 +121,7 @@ func GetRAMData(format string, unit string) string {
 }
 
 //take care of divide by zero error
-func GetRAMUsage() string {
+func GetRAMUsage(config *configInterface) string {
 	// updateRAMStatus()
 	// var percentage float64
 	// if useFree {
@@ -135,13 +135,13 @@ func GetRAMUsage() string {
 	if err!=nil{
 		fmt.Println(err)
 	}
-	return fmt.Sprintf("%o", int(math.Ceil(memory.UsedPercent)))
+	return fmt.Sprintf("ram: %d%%", int(math.Ceil(memory.UsedPercent)))
 }
 
 func GetRAM(ramChan chan string, config *configInterface) {
 	defaultFormat := "%s%%"
 	for {
-		ramChan <- fmt.Sprintf(defaultFormat, GetRAMUsage())
+		ramChan <- fmt.Sprintf(defaultFormat, GetRAMUsage(&configInterface{}))
 		time.Sleep(5 * time.Second)
 	}
 }

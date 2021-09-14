@@ -2,38 +2,57 @@ package main
 
 import (
 	"fmt"
-	"mrogalski.eu/go/xbacklight"
-	"time"
+	"os"
+	"strconv"
+	"strings"
 )
 
-func GetBrightness(brightnessChan chan string, config *configInterface) {
-	for {
-		backlighter, err := xbacklight.NewBacklighterPrimaryScreen()
-		if err != nil {
-			fmt.Println("Error with connecting to X display:", err)
-			brightnessChan <- ""
-			time.Sleep(time.Second)
-			continue
+func GetBrightness(config *configInterface) string {
+	rootPath := "/sys/class/backlight"
+	backlightSources, err := os.ReadDir(rootPath)
+	if err != nil {
+		fmt.Println(err)
+	}
+	for _, backlightSource := range backlightSources {
 
-		}
-		brightnessFloat, err := backlighter.Get()
+		brightnessFile, err := os.ReadFile(strings.Join([]string{rootPath, backlightSource.Name(), "brightness"}, "/"))
 		if err != nil {
-			fmt.Println("Couldn't query backlight:", err)
-			brightnessChan <- ""
-			time.Sleep(time.Second)
-			continue
+			fmt.Println("Error reading brightness")
+			return ""
 		}
-		brightnessFloat *= 100
+		brightnessString := string(brightnessFile)
+		brightnessString = strings.Replace(brightnessString, "\n", "", -1)
+		brightnessInt, err := strconv.Atoi(brightnessString)
+		if err != nil {
+			fmt.Println("Error parsing brightness")
+			return ""
+		}
+
+		maxBrightnessFile, err := os.ReadFile(strings.Join([]string{rootPath, backlightSource.Name(), "max_brightness"}, "/"))
+		if err != nil {
+			fmt.Println("Error reading brightness")
+			return ""
+		}
+		maxBrightnessString := string(maxBrightnessFile)
+		maxBrightnessString = strings.Replace(maxBrightnessString, "\n", "", -1)
+		maxBrightnessInt, err := strconv.Atoi(maxBrightnessString)
+		if err != nil {
+			fmt.Println("Error parsing brightness")
+			return ""
+		}
+
+		brightnessFloat := (float32(brightnessInt) / float32(maxBrightnessInt)) * 100
+		fmt.Println(brightnessFloat)
 
 		var formattedString string
 
 		if brightnessFloat < 50.0 {
-			formattedString = fmt.Sprintf("🔅 %v", int64(brightnessFloat))
+			formattedString = fmt.Sprintf("🔅 %d", int64(brightnessFloat))
 		} else {
-			formattedString = fmt.Sprintf("🔆 %v", int64(brightnessFloat))
+			formattedString = fmt.Sprintf("🔆 %d", int64(brightnessFloat))
 		}
 
-		brightnessChan <- formattedString
-		time.Sleep(time.Second)
+		return formattedString
 	}
+	return ""
 }

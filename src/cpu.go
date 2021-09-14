@@ -159,7 +159,7 @@ func GetCPUUsage() string {
 	if err != nil {
 		fmt.Println(err)
 	}
-	return fmt.Sprintf("%o", int(math.Ceil(percent[0])))
+	return fmt.Sprintf("%d", int(math.Ceil(percent[0])))
 }
 
 func GetCPU(cpuChan chan string, config *configInterface) {
