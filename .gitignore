@@ -2,3 +2,5 @@
 /pkg
 
 .env
+
+go-dwm-statusbar

@@ -3,12 +3,10 @@ package main
 import (
 	"fmt"
 	"strconv"
-	"time"
 
 	"github.com/Pauloo27/go-mpris"
 	"github.com/godbus/dbus/v5"
 )
-
 
 /*
 GetMpris returns the ...
@@ -16,56 +14,43 @@ Compatible with cmus, vlc, and partially spotify
 POSITION DOESNT WORK ON SPOTIFY, IT ALWAYS DISPLAYS ZERO
 TODO: custom formatting for play state and pause state with a parser that converts it to a string ready to pass into fmt.sprintf
 */
-func GetMpris(mprisChan chan string, config *configInterface) {
+func GetMpris(config *configInterface) string {
 	playingFormat := config.PlayingFormat
 	pausedFormat := config.PausedFormat
 
-	interval := time.Second
+	// interval := time.Second
 
 	for {
 		con, conErr := dbus.SessionBus()
 
 		if conErr != nil {
 			fmt.Println("Error with connecting to DBUS")
-			mprisChan <- ""
-			time.Sleep(interval)
-			continue
+			return ""
 		}
 		players, playerErr := mpris.List(con)
 
 		if playerErr != nil {
 			fmt.Println("Error with detecting player")
-			mprisChan <- ""
-			time.Sleep(interval)
-			continue
+			return ""
 		}
 		if len(players) == 0 {
 			// fmt.Println("No player found")
-			mprisChan <- ""
-			time.Sleep(interval)
-			continue
+			return ""
 		}
 
+		// TODO: if first player is unavailable or paused cycle through other ones
 		name := players[0]
 		player := mpris.New(con, name)
 
 		status, err := player.GetPlaybackStatus()
 		if err != nil {
-			mprisChan <- ""
-			time.Sleep(interval)
-			continue
+			return ""
 		}
 
-
-
-
 		if status == "Playing" {
-			mprisChan <- getPlayingInfo(player, playingFormat)
-			time.Sleep(interval)
-			continue
+			return getPlayingInfo(player, playingFormat)
 		} else if status == "Paused" {
 			//have an option to format pause state
-			quit := false
 			for _, player := range players {
 				player := mpris.New(con, player)
 
@@ -74,23 +59,12 @@ func GetMpris(mprisChan chan string, config *configInterface) {
 					continue
 				}
 				if status == "Playing" {
-					mprisChan <- getPlayingInfo(player, playingFormat)
-					quit = true
-					break
+					return getPlayingInfo(player, playingFormat)
 				}
 			}
-			if quit {
-				time.Sleep(interval)
-				continue
-			}
-			mprisChan <- pausedFormat
-			time.Sleep(interval)
-			continue
+			return pausedFormat
 		} else {
-			mprisChan <- ""
-			time.Sleep(interval)
-			continue
-
+			return ""
 		}
 	}
 }

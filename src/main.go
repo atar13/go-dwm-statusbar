@@ -81,6 +81,14 @@ func main() {
 
 	// loopCounter++
 
+	tick := 0
+
+	// timeOutput := ""
+	dateOutput := ""
+	cpuOutput := ""
+	ramOutput := ""
+	batteryOutput := ""
+
 	// loop that actually displays the data to the statusbar
 	for {
 		output := ""
@@ -91,12 +99,56 @@ func main() {
 			switch module {
 			case "time":
 				moduleOutput = GetTime(parsedConfig)
+			case "date":
+				if loopCounter%20 == 0 {
+					moduleOutput = GetDate(parsedConfig)
+					dateOutput = moduleOutput
+				} else {
+					moduleOutput = dateOutput
+				}
+			case "cpu":
+				if loopCounter%20 == 0 {
+					moduleOutput = GetCPUUsage(parsedConfig)
+					cpuOutput = moduleOutput
+				} else {
+					moduleOutput = cpuOutput
+				}
 			case "ram":
-				moduleOutput = GetRAMUsage(parsedConfig)
+				if loopCounter%4 == 0 {
+					moduleOutput = GetRAMUsage(parsedConfig)
+					ramOutput = moduleOutput
+				} else {
+					moduleOutput = ramOutput
+				}
 			case "battery":
-				moduleOutput = GetBatteryPercentage(parsedConfig)
+				if loopCounter%4 == 0 {
+					moduleOutput = GetBatteryPercentage(parsedConfig)
+					batteryOutput = moduleOutput
+				} else {
+					moduleOutput = batteryOutput
+				}
 			case "brightness":
 				moduleOutput = GetBrightness(parsedConfig)
+			case "pulse":
+				moduleOutput = GetPulseVolume(parsedConfig)
+			case "mpris":
+				moduleOutput = GetMpris(parsedConfig)
+				maxLength, err := strconv.Atoi(config.MprisMaxLength)
+				if err != nil {
+					maxLength = 10
+				}
+				if len(moduleOutput) > maxLength {
+					// each iteration move the text to 1/2 of the maxlength
+					tick += maxLength / 2
+					startPos := tick % len(moduleOutput)
+					endPos := (tick + maxLength) % len(moduleOutput)
+					if endPos > startPos {
+						moduleOutput = fmt.Sprintf("%s ", moduleOutput[startPos:endPos])
+					} else {
+						moduleOutput = fmt.Sprintf("%s %s", moduleOutput[startPos:], moduleOutput[:endPos])
+					}
+
+				}
 			}
 			if moduleOutput != "" {
 				output += moduleOutput
@@ -120,18 +172,20 @@ func main() {
 
 		configRefreshRate, err := strconv.Atoi(parsedConfig.RefreshConfigRate)
 		if err != nil {
-			configRefreshRate = 100
+			configRefreshRate = 10
 		}
 
 		if parsedConfig.RefreshConfig && loopCounter%configRefreshRate == 0 {
 			parsedConfigChan := make(chan *configInterface)
 			go refreshConfig(parsedConfigChan, *parsedConfig, &configLastModified)
 			parsedConfig = <-parsedConfigChan
+			fmt.Println("Reading config file")
 			fmt.Println(*parsedConfig)
 		}
 		// time.Sleep(time.Duration(mainRefreshInterval) * time.Second)
 		// maybe have half a second speed
-		time.Sleep(time.Second)
+		time.Sleep(1 * time.Second)
+		loopCounter++
 	}
 
 }
@@ -195,7 +249,7 @@ func (config *configInterface) retrieveConfig(configLastModified *time.Time) *co
 
 	yaml.Unmarshal(data, config)
 
-	data = nil
+	// data = nil
 
 	return config
 }

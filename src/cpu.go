@@ -63,7 +63,7 @@ CPU_Percentage = (totald - idled)/totald
 */
 
 //
-func GetCPUUsage() string {
+func GetCPUUsage(config *configInterface) string {
 
 	// var previdle int
 	// var previoWait int
@@ -159,13 +159,11 @@ func GetCPUUsage() string {
 	if err != nil {
 		fmt.Println(err)
 	}
-	return fmt.Sprintf("%d", int(math.Ceil(percent[0])))
+	usage := fmt.Sprintf("%d", int(math.Ceil(percent[0])))
+	return fmt.Sprintf("usage: %s%%", usage)
 }
 
-func GetCPU(cpuChan chan string, config *configInterface) {
+func GetCPU(config *configInterface) string {
 	defaultFormat := "Temp:%s Usage:%s%%"
-	for {
-		cpuChan <- fmt.Sprintf(defaultFormat, GetCPUTemp(config), GetCPUUsage())
-		time.Sleep(5*time.Second)
-	}
+	return fmt.Sprintf(defaultFormat, GetCPUTemp(config), GetCPUUsage(config))
 }

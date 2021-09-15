@@ -1,17 +1,16 @@
 # go-dwm-statusbar
 
-Lightweight status bar for the dwm window manager. 
+Fast and lightweight status bar for the dwm window manager on Linux desktops.
 
 ### Modules:
 - Date
 - Time
 - Battery
 - Brightness
-- CPU
-- RAM
+- CPU Usage
+- Memory Usage
 - MPRIS (Media playback status)
 - Pulseaudo Volume Status
-    - Requires pulseaudio package
 
 ### Download
 ```

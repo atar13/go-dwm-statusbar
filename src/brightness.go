@@ -42,7 +42,6 @@ func GetBrightness(config *configInterface) string {
 		}
 
 		brightnessFloat := (float32(brightnessInt) / float32(maxBrightnessInt)) * 100
-		fmt.Println(brightnessFloat)
 
 		var formattedString string
 
