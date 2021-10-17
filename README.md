@@ -1,6 +1,9 @@
 # go-dwm-statusbar
 
-Fast and lightweight status bar for the dwm window manager on Linux desktops.
+Fast and lightweight status bar for the dwm window manager on Linux X11 desktops.
+
+![go-dwm-statusbar](./assets/screenshot.png)
+
 
 ### Modules:
 - Date
