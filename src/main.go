@@ -32,13 +32,37 @@ type configInterface struct {
 	BatteryFormat        string   `yaml:"BatteryFormat"`
 	ChargingIndicator    string   `yaml:"ChargingIndicator"`
 	DischargingIndicator string   `yaml:"DischargingIndicator"`
-	RAMDisplay           string   `yaml:"RAMDisplay"`
-	RAMRawUnit           string   `yaml:"RAMRawUnit"`
-	RAMRawFormat         string   `yaml:"RAMRawFormat"`
-	LowBrightnessFormat  string   `yaml:"LowBrightnessFormat"`
-	HighBrightnessFormat string   `yaml:"HighBrightnessFormat"`
-	PulseMutedFormat     string   `yaml:"PulseMutedFormat"`
-	PulseVolumeFormat    string   `yaml:"PulseVolumeFormat"`
+	// MaxLowBattery        string   `yaml:"MaxLowBattery"`
+	// MaxMidBattery        string   `yaml:"MaxMidBattery"`
+	RAMDisplay           string `yaml:"RAMDisplay"`
+	RAMRawUnit           string `yaml:"RAMRawUnit"`
+	RAMRawFormat         string `yaml:"RAMRawFormat"`
+	LowBrightnessFormat  string `yaml:"LowBrightnessFormat"`
+	HighBrightnessFormat string `yaml:"HighBrightnessFormat"`
+	PulseMutedFormat     string `yaml:"PulseMutedFormat"`
+	PulseVolumeFormat    string `yaml:"PulseVolumeFormat"`
+
+	FullChargingIndicator    string `yaml:"FullChargingIndicator"`
+	NinetyChargingIndicator  string `yaml:"NinetyChargingIndicator"`
+	EightyChargingIndicator  string `yaml:"EightyChargingIndicator"`
+	SeventyChargingIndicator string `yaml:"SeventyChargingIndicator"`
+	SixtyChargingIndicator   string `yaml:"SixtyChargingIndicator"`
+	FiftyChargingIndicator   string `yaml:"FiftyChargingIndicator"`
+	FortyChargingIndicator   string `yaml:"FortyChargingIndicator"`
+	ThirtyChargingIndicator   string `yaml:"ThirtyChargingIndicator"`
+	TwentyChargingIndicator  string `yaml:"TwentyChargingIndicator"`
+	TenChargingIndicator     string `yaml:"TenChargingIndicator"`
+
+	FullDischargingIndicator    string `yaml:"FullDischargingIndicator"`
+	NinetyDischargingIndicator  string `yaml:"NinetyDischargingIndicator"`
+	EightyDischargingIndicator  string `yaml:"EightyDischargingIndicator"`
+	SeventyDischargingIndicator string `yaml:"SeventyDischargingIndicator"`
+	SixtyDischargingIndicator   string `yaml:"SixtyDischargingIndicator"`
+	FiftyDischargingIndicator   string `yaml:"FiftyDischargingIndicator"`
+	FortyDischargingIndicator   string `yaml:"FortyDischargingIndicator"`
+	ThirtyDischargingIndicator  string `yaml:"ThirtyDischargingIndicator"`
+	TwentyDischargingIndicator  string `yaml:"TwentyDischargingIndicator"`
+	TenDischargingIndicator     string `yaml:"TenDischargingIndicator"`
 }
 
 type moduleData struct {
@@ -132,6 +156,7 @@ func main() {
 			case "pulse":
 				moduleOutput = GetPulseVolume(parsedConfig)
 			case "mpris":
+				//make this its own goroutine that returns info whenever its ready to
 				moduleOutput = GetMpris(parsedConfig)
 				maxLength, err := strconv.Atoi(config.MprisMaxLength)
 				if err != nil {
@@ -184,7 +209,7 @@ func main() {
 		}
 		// time.Sleep(time.Duration(mainRefreshInterval) * time.Second)
 		// maybe have half a second speed
-		time.Sleep(1 * time.Second)
+		time.Sleep(time.Second / 2)
 		loopCounter++
 	}
 

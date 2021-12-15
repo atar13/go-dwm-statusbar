@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 )
 
@@ -29,12 +30,79 @@ func GetBatteryPercentage(config *configInterface) string {
 
 		statusString := string(statusFile)
 		statusOutput := ""
+		percentageInt, err := strconv.Atoi(percentageString)
+		if err != nil {
+			statusOutput = ""
+		}
 		switch statusString {
-		case "Discharging\n":
-			statusOutput = config.DischargingIndicator
+		// case "Discharging\n":
+		// 	// statusOutput = config.DischargingIndicator
+		// 	if percentageInt <= 10 {
+		// 		statusOutput = config.TenDischargingIndicator
+		// 	} else if percentageInt <= 20 {
+		// 		statusOutput = config.TwentyDischargingIndicator
+		// 	} else if percentageInt <= 30 {
+		// 		statusOutput = config.ThirtyDischargingIndicator
+		// 	} else if percentageInt <= 40 {
+		// 		statusOutput = config.FortyDischargingIndicator
+		// 	} else if percentageInt <= 50 {
+		// 		statusOutput = config.FiftyDischargingIndicator
+		// 	} else if percentageInt <= 60 {
+		// 		statusOutput = config.SixtyDischargingIndicator
+		// 	} else if percentageInt <= 70 {
+		// 		statusOutput = config.SeventyDischargingIndicator
+		// 	} else if percentageInt <= 80 {
+		// 		statusOutput = config.EightyDischargingIndicator
+		// 	} else if percentageInt <= 90 {
+		// 		statusOutput = config.NinetyDischargingIndicator
+		// 	} else {
+		// 		statusOutput = config.FullDischargingIndicator
+		// 	}
 		case "Charging\n":
-			statusOutput = config.ChargingIndicator
+			// statusOutput = config.ChargingIndicator
+			if percentageInt <= 10 {
+				statusOutput = config.TenChargingIndicator
+			} else if percentageInt <= 20 {
+				statusOutput = config.TwentyChargingIndicator
+			} else if percentageInt <= 30 {
+				statusOutput = config.ThirtyChargingIndicator
+			} else if percentageInt <= 40 {
+				statusOutput = config.FortyChargingIndicator
+			} else if percentageInt <= 50 {
+				statusOutput = config.FiftyChargingIndicator
+			} else if percentageInt <= 60 {
+				statusOutput = config.SixtyChargingIndicator
+			} else if percentageInt <= 70 {
+				statusOutput = config.SeventyChargingIndicator
+			} else if percentageInt <= 80 {
+				statusOutput = config.EightyChargingIndicator
+			} else if percentageInt <= 90 {
+				statusOutput = config.NinetyChargingIndicator
+			} else {
+				statusOutput = config.FullChargingIndicator
+			}
 		default:
+			if percentageInt <= 10 {
+				statusOutput = config.TenDischargingIndicator
+			} else if percentageInt <= 20 {
+				statusOutput = config.TwentyDischargingIndicator
+			} else if percentageInt <= 30 {
+				statusOutput = config.ThirtyDischargingIndicator
+			} else if percentageInt <= 40 {
+				statusOutput = config.FortyDischargingIndicator
+			} else if percentageInt <= 50 {
+				statusOutput = config.FiftyDischargingIndicator
+			} else if percentageInt <= 60 {
+				statusOutput = config.SixtyDischargingIndicator
+			} else if percentageInt <= 70 {
+				statusOutput = config.SeventyDischargingIndicator
+			} else if percentageInt <= 80 {
+				statusOutput = config.EightyDischargingIndicator
+			} else if percentageInt <= 90 {
+				statusOutput = config.NinetyDischargingIndicator
+			} else {
+				statusOutput = config.FullDischargingIndicator
+			}
 
 		}
 
